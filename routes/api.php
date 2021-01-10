@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\User;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LariController;
 
 
 /*
@@ -30,5 +31,12 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     // Route::get('user', 'UserController@getAuthenticatedUser');
     // Route::get('closed', 'DataController@closed');
     Route::get('/getprofil', 'UserController@getProfil');
-    Route::put('/updateprofil', 'UserController@updateProfil');
+    Route::post('/updateprofil', 'UserController@updateProfil');
+    Route::get('/getriwayatlari', 'LariController@getRiwayatLari');
+    Route::post('/createtrack', 'LariController@createLari');
+    Route::post('/updatestep/{id_exercise}', 'LariController@updateStep');
+    Route::post('/finishtrack/{id_exercise}', 'LariController@finishTrack');
+    Route::post('/deletetrack/{id_exercise}', 'LariController@deleteTrack');
+    Route::post('/uploadfoto','UserController@upload');
+    Route::get('/getfotoprofil','UserController@getFotoProfil');
     });

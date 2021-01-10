@@ -82,35 +82,37 @@ class UserController extends Controller
                 'message' => 'User belum memiliki autentikasi'
             ], 400);
         }
-        $update = $user->update([
-            'bb' => $request->bb,
-            'tb' => $request->tb,
-            'usia' => $request->usia,
-            'no_hp' => $request->no_hp
-        ]);
-        // $update_user = array([            'bb' =>  $request->bb,
-        //     'tb' => $request->tb,
-        //     'usia' => $request->usia,
-        //     'no_hp' => $request->no_hp
-        // );
-        return response()->json($update);
-        // $update_arr = 
-        // $user->bb = $request->bb;
-        // $user->tb = $request->tb;
-        // $user->no_hp = $request->no_hp;
-        // $user->usia = $request->usia;
-        // $updated = $user->save();
-        // return response()->json();
-        // if ($updated) {
-        //     return response()->json([
-        //         'success' => true,
-        //         'message' => 'Profil berhasil diupdate!'
-        //     ]);
-        // } else {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Gagal update profil!'
-        //     ], 500);
-        // }
+        $update = $user->fill($request->all())
+        ->save();
+        if ($update) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Profil berhasil diupdate!'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal update profil!'
+            ], 500);
+        }
+    }
+
+    public function upload(Request $request){
+        // $id_user = auth()->user()->id;
+        if($request->hasFile('image')){
+            $resorce = $request->file('image');
+            $name   = $resorce->getClientOriginalName();
+            $resorce->move(\base_path() ."/public/foto_profil", $name);
+            $user = User::find(auth()->user()->id);
+            $user->update(['foto'=>$name]);
+            echo "Gambar berhasil di upload";
+        }else{
+            echo "Gagal upload gambar";
+        }
+    }
+
+    public function getFotoProfil(){
+        $foto = User::where('id', auth()->user()->id)->get('foto');
+        return response()->json($foto);
     }
 }
